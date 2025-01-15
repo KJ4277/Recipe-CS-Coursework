@@ -120,6 +120,7 @@
             display: none;
             margin-top: 10px;
         }
+
         .toggle-instructions-btn {
             margin-top: 10px;
             padding: 6px 10px;
@@ -141,8 +142,6 @@
         .toggle-instructions-btn:hover {
             background-color: #0056b3;
         }
-
-
     </style>
 </head>
 <body>
@@ -163,6 +162,10 @@
 
     <script>
         const mealsContainer = document.getElementById('mealsContainer');
+
+        // Lists of known non-vegetarian and non-vegan ingredients
+        const nonVegetarianIngredients = ['chicken', 'beef', 'pork', 'fish', 'duck', 'lamb'];
+        const nonVeganIngredients = ['egg', 'cheese', 'milk', 'butter', 'cream'];
 
         function fetchFilterMeal() {
             const userInput = document.getElementById('userInput').value.trim();
@@ -189,8 +192,11 @@
                             .then(mealsData => {
                                 const filteredMeals = mealsData.filter(mealData => {
                                     const meal = mealData.meals[0];
-                                    if (vegetarianChecked && !meal.strTags?.includes('Vegetarian')) return false;
-                                    if (veganChecked && !meal.strTags?.includes('Vegan')) return false;
+                                    const ingredients = getIngredients(meal);
+                                    
+                                    // Check for non-vegetarian and non-vegan ingredients
+                                    if (vegetarianChecked && containsNonVegetarian(ingredients)) return false;
+                                    if (veganChecked && containsNonVegan(ingredients)) return false;
                                     return true;
                                 });
 
@@ -263,6 +269,18 @@
                 instructionsDiv.style.display = 'block';
                 button.textContent = 'Hide Instructions';
             }
+        }
+
+        function containsNonVegetarian(ingredients) {
+            return ingredients.some(ingredient =>
+                nonVegetarianIngredients.some(nonVeg => ingredient.toLowerCase().includes(nonVeg))
+            );
+        }
+
+        function containsNonVegan(ingredients) {
+            return ingredients.some(ingredient =>
+                nonVeganIngredients.some(nonVegan => ingredient.toLowerCase().includes(nonVegan))
+            );
         }
     </script>
 </body>
