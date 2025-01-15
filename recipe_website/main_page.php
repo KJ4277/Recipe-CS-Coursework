@@ -7,21 +7,21 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #d4b18b;
             margin: 0;
             padding: 0;
+            background-color: #d4b18b;
             display: flex;
             justify-content: flex-start;
         }
 
-        /* Container layout (search bar on left, meals on right) */
+        /* Container for layout (search bar on left, meals on right) */
         .container {
             display: flex;
             justify-content: space-between;
             width: 100%;
         }
 
-        /* Left side for search and filters */
+        /* Left side (search bar and filters) */
         .filters-container {
             width: 30%;
             padding: 20px;
@@ -29,11 +29,15 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             border-radius: 10px;
             margin: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
         }
 
         .search-container {
             display: flex;
             align-items: center;
+            justify-content: space-between;
             height: 60px;
             margin-bottom: 20px;
         }
@@ -57,8 +61,7 @@
             font-size: 1rem;
         }
 
-        .search-container input[type="submit"]:hover,
-        .search-container input[type="submit"]:focus {
+        .search-container input[type="submit"]:hover {
             background-color: #0056b3;
         }
 
@@ -75,6 +78,7 @@
             background-color: white;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
             text-align: center;
             padding: 20px;
         }
@@ -86,6 +90,7 @@
         }
 
         .meal-card h2 {
+            font-size: 1.2rem;
             margin: 10px 0;
         }
 
@@ -97,6 +102,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            font-size: 0.9rem;
         }
 
         .meal-card button:hover {
@@ -107,45 +113,69 @@
             text-align: left;
             display: none;
         }
-
-        .meal-card button:focus {
-            outline: 2px solid #0056b3;
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <!-- Filters and search bar on the left -->
-        <aside class="filters-container">
-            <form class="search-container" onsubmit="fetchFilterMeal(); return false;">
-                <input type="text" id="userInput" name="userInput" placeholder="Enter an ingredient" aria-label="Ingredient search">
-                <input type="submit" value="Search">
-            </form>
-        </aside>
+        <div class="filters-container">
+            <div class="search-container">
+                <input type="text" id="userInput" name="userInput" placeholder="Enter an ingredient" />
+                <input type="submit" onclick="fetchFilterMeal();" value="Search" />
+            </div>
+            <h3>Dietary Preferences</h3>
+            <label>
+                <input type="checkbox" id="vegetarianFilter"> Vegetarian
+            </label><br>
+            <label>
+                <input type="checkbox" id="veganFilter"> Vegan
+            </label>
+        </div>
 
-        <!-- Meals display on the right -->
-        <section id="mealsContainer" class="meals-container"></section>
+        <!-- Meals on the right side -->
+        <div id="mealsContainer" class="meals-container"></div>
     </div>
 
     <script>
         const mealsContainer = document.getElementById('mealsContainer');
 
-        // Function to fetch meals based on an ingredient
         function fetchFilterMeal() {
             const userInput = document.getElementById('userInput').value.trim();
+            const vegetarianChecked = document.getElementById('vegetarianFilter').checked;
+            const veganChecked = document.getElementById('veganFilter').checked;
 
             if (!userInput) {
-                alert('Please enter an ingredient.');
+                alert('Please enter an ingredient');
                 return;
             }
 
             fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${encodeURIComponent(userInput)}`)
                 .then(response => response.json())
                 .then(data => {
-                    mealsContainer.innerHTML = ''; // Clear previous results
+                    mealsContainer.innerHTML = '';
 
                     if (data.meals) {
-                        data.meals.forEach(meal => displayMealCard(meal));
+                        const promises = data.meals.map(meal =>
+                            fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${meal.idMeal}`)
+                                .then(response => response.json())
+                        );
+
+                        Promise.all(promises)
+                            .then(mealsData => {
+                                const filteredMeals = mealsData
+                                    .map(mealData => mealData.meals[0])
+                                    .filter(meal => {
+                                        if (vegetarianChecked && meal.strCategory !== 'Vegetarian') return false;
+                                        if (veganChecked && !isVegan(meal)) return false;
+                                        return true;
+                                    });
+
+                                if (filteredMeals.length) {
+                                    filteredMeals.forEach(displayMealCard);
+                                } else {
+                                    mealsContainer.innerHTML = '<p>No meals match the selected filters.</p>';
+                                }
+                            });
                     } else {
                         mealsContainer.innerHTML = '<p>No meals found for this ingredient.</p>';
                     }
@@ -156,7 +186,17 @@
                 });
         }
 
-        // Function to display each meal card
+        function isVegan(meal) {
+            const nonVeganIngredients = ['Beef', 'Chicken', 'Pork', 'Fish', 'Cheese', 'Milk', 'Egg', 'Butter', 'Honey'];
+            for (let i = 1; i <= 20; i++) {
+                const ingredient = meal[`strIngredient${i}`];
+                if (ingredient && nonVeganIngredients.some(item => ingredient.includes(item))) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         function displayMealCard(meal) {
             const mealCard = document.createElement('div');
             mealCard.classList.add('meal-card');
@@ -164,6 +204,8 @@
             mealCard.innerHTML = `
                 <img src="${meal.strMealThumb}" alt="${meal.strMeal}">
                 <h2>${meal.strMeal}</h2>
+                <p><strong>Category:</strong> ${meal.strCategory}</p>
+                <p><strong>Area:</strong> ${meal.strArea}</p>
                 <button onclick="fetchMealDetails(${meal.idMeal}, this)">View Details</button>
                 <div class="meal-details"></div>
             `;
@@ -171,7 +213,6 @@
             mealsContainer.appendChild(mealCard);
         }
 
-        // Function to fetch and toggle detailed meal information
         function fetchMealDetails(idMeal, button) {
             const detailsDiv = button.nextElementSibling;
 
@@ -185,14 +226,11 @@
                 .then(response => response.json())
                 .then(data => {
                     const mealDetails = data.meals[0];
-                    const instructions = mealDetails.strInstructions
-                        .split(/(?<=\.)\s+/)
+                    const instructions = mealDetails.strInstructions.split(/(?<=\.)\s+/)
                         .map(step => `<li>${step.trim()}</li>`)
                         .join('');
 
                     detailsDiv.innerHTML = `
-                        <p><strong>Category:</strong> ${mealDetails.strCategory}</p>
-                        <p><strong>Area:</strong> ${mealDetails.strArea}</p>
                         <p><strong>Instructions:</strong></p>
                         <ol>${instructions}</ol>
                     `;
