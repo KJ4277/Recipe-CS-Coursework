@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -53,14 +54,32 @@
             margin-bottom: 20px;
         }
 
-        .filters-container label {
-            font-size: 1rem;
+        .filter-option {
             display: flex;
             align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            background-color: white;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
         }
 
-        .filters-container input[type="checkbox"] {
-            margin-right: 5px;
+        .filter-option:hover {
+            background-color: #f5f5f5;
+            border-color: #007bff;
+        }
+
+        .filter-option input[type="radio"] {
+            accent-color: #007bff; /* Customize the radio button color */
+            transform: scale(1.2); /* Enlarge the radio button slightly */
+        }
+
+        .filter-option input[type="radio"]:checked + label {
+            background-color: #007bff;
+            color: white;
+            border-color: #0056b3;
         }
 
         .meals-container {
@@ -142,6 +161,7 @@
         .toggle-instructions-btn:hover {
             background-color: #0056b3;
         }
+
     </style>
 </head>
 <body>
@@ -152,10 +172,23 @@
     </div>
 
     <!-- Filter options -->
+    <!-- Filter options -->
     <div class="filters-container">
-        <label><input type="checkbox" id="vegetarianFilter"> Vegetarian</label>
-        <label><input type="checkbox" id="veganFilter"> Vegan</label>
+        <label class="filter-option">
+            <input type="radio" id="noneFilter" name="dietFilter" value="none" checked>
+            No Filter
+        </label>
+        <label class="filter-option">
+            <input type="radio" id="vegetarianFilter" name="dietFilter" value="vegetarian">
+            Vegetarian
+        </label>
+        <label class="filter-option">
+            <input type="radio" id="veganFilter" name="dietFilter" value="vegan">
+            Vegan
+        </label>
     </div>
+
+    
 
     <!-- Meals display area -->
     <div id="mealsContainer" class="meals-container"></div>
@@ -168,53 +201,53 @@
         const nonVeganIngredients = ['egg', 'cheese', 'milk', 'butter', 'cream'];
 
         function fetchFilterMeal() {
-            const userInput = document.getElementById('userInput').value.trim();
-            const vegetarianChecked = document.getElementById('vegetarianFilter').checked;
-            const veganChecked = document.getElementById('veganFilter').checked;
+    const userInput = document.getElementById('userInput').value.trim();
+    const dietFilter = document.querySelector('input[name="dietFilter"]:checked').value;
 
-            if (!userInput) {
-                alert('Please enter an ingredient');
-                return;
-            }
+    if (!userInput) {
+        alert('Please enter an ingredient');
+        return;
+    }
 
-            fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${encodeURIComponent(userInput)}`)
-                .then(response => response.json())
-                .then(data => {
-                    mealsContainer.innerHTML = '';
+        fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${encodeURIComponent(userInput)}`)
+            .then(response => response.json())
+            .then(data => {
+                mealsContainer.innerHTML = '';
 
-                    if (data.meals) {
-                        const promises = data.meals.map(meal =>
-                            fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${meal.idMeal}`)
-                                .then(response => response.json())
-                        );
+                if (data.meals) {
+                    const promises = data.meals.map(meal =>
+                        fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${meal.idMeal}`)
+                            .then(response => response.json())
+                    );
 
-                        Promise.all(promises)
-                            .then(mealsData => {
-                                const filteredMeals = mealsData.filter(mealData => {
-                                    const meal = mealData.meals[0];
-                                    const ingredients = getIngredients(meal);
-                                    
-                                    // Check for non-vegetarian and non-vegan ingredients
-                                    if (vegetarianChecked && containsNonVegetarian(ingredients)) return false;
-                                    if (veganChecked && containsNonVegan(ingredients)) return false;
-                                    return true;
-                                });
+                    Promise.all(promises)
+                        .then(mealsData => {
+                            const filteredMeals = mealsData.filter(mealData => {
+                                const meal = mealData.meals[0];
+                                const ingredients = getIngredients(meal);
 
-                                if (filteredMeals.length > 0) {
-                                    filteredMeals.forEach(mealData => displayMealCard(mealData.meals[0]));
-                                } else {
-                                    mealsContainer.innerHTML = '<p>No meals found for the selected filters.</p>';
-                                }
+                                if (dietFilter === 'vegetarian' && containsNonVegetarian(ingredients)) return false;
+                                if (dietFilter === 'vegan' && containsNonVegan(ingredients)) return false;
+
+                                return true;
                             });
-                    } else {
-                        mealsContainer.innerHTML = '<p>No meals found for this ingredient.</p>';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching meals:', error);
-                    mealsContainer.innerHTML = '<p>Sorry, there was an error fetching the meals.</p>';
-                });
-        }
+
+                            if (filteredMeals.length > 0) {
+                                filteredMeals.forEach(mealData => displayMealCard(mealData.meals[0]));
+                            } else {
+                                mealsContainer.innerHTML = '<p>No meals found for the selected filters.</p>';
+                            }
+                        });
+                } else {
+                    mealsContainer.innerHTML = '<p>No meals found for this ingredient.</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching meals:', error);
+                mealsContainer.innerHTML = '<p>Sorry, there was an error fetching the meals.</p>';
+            });
+    }
+
 
         function displayMealCard(meal) {
             const mealCard = document.createElement('div');
