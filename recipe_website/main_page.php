@@ -7,21 +7,21 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #d4b18b;
             margin: 0;
             padding: 0;
-            background-color: #d4b18b;
             display: flex;
             justify-content: flex-start;
         }
 
-        /* Container for the layout (searchbar on left, meals on right) */
+        /* Container layout (search bar on left, meals on right) */
         .container {
             display: flex;
             justify-content: space-between;
             width: 100%;
         }
 
-        /* Left side (search bar and filters) */
+        /* Left side for search and filters */
         .filters-container {
             width: 30%;
             padding: 20px;
@@ -29,16 +29,12 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             border-radius: 10px;
             margin: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
         }
 
         .search-container {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            height: 60px; /* Fixed height to prevent scaling */
+            height: 60px;
             margin-bottom: 20px;
         }
 
@@ -61,7 +57,8 @@
             font-size: 1rem;
         }
 
-        .search-container input[type="submit"]:hover {
+        .search-container input[type="submit"]:hover,
+        .search-container input[type="submit"]:focus {
             background-color: #0056b3;
         }
 
@@ -78,7 +75,6 @@
             background-color: white;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
             text-align: center;
             padding: 20px;
         }
@@ -90,7 +86,6 @@
         }
 
         .meal-card h2 {
-            font-size: 1.2rem;
             margin: 10px 0;
         }
 
@@ -102,7 +97,6 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 0.9rem;
         }
 
         .meal-card button:hover {
@@ -111,68 +105,76 @@
 
         .meal-details {
             text-align: left;
+            display: none;
+        }
+
+        .meal-card button:focus {
+            outline: 2px solid #0056b3;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <!-- Filters and search bar on the left -->
-        <div class="filters-container">
-            <div class="search-container">
-                <input type="text" id="userInput" name="userInput" placeholder="Enter an ingredient" />
-                <input type="submit" onclick="fetchFilterMeal();" value="Search" />
-            </div>
-        </div>
+        <aside class="filters-container">
+            <form class="search-container" onsubmit="fetchFilterMeal(); return false;">
+                <input type="text" id="userInput" name="userInput" placeholder="Enter an ingredient" aria-label="Ingredient search">
+                <input type="submit" value="Search">
+            </form>
+        </aside>
 
-        <!-- Meals on the right side -->
-        <div id="mealsContainer" class="meals-container"></div>
+        <!-- Meals display on the right -->
+        <section id="mealsContainer" class="meals-container"></section>
     </div>
 
     <script>
-        // Function to fetch meals based on an ingredient and apply filters
+        const mealsContainer = document.getElementById('mealsContainer');
+
+        // Function to fetch meals based on an ingredient
         function fetchFilterMeal() {
-            const userInput = document.getElementById('userInput').value;
+            const userInput = document.getElementById('userInput').value.trim();
 
             if (!userInput) {
-                alert('Please enter an ingredient');
+                alert('Please enter an ingredient.');
                 return;
             }
 
-            fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${userInput}`)
+            fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${encodeURIComponent(userInput)}`)
                 .then(response => response.json())
                 .then(data => {
-                    if (data.meals && data.meals.length > 0) {
-                        const mealsContainer = document.getElementById('mealsContainer');
-                        mealsContainer.innerHTML = ''; // Clear previous results
+                    mealsContainer.innerHTML = ''; // Clear previous results
 
-                        data.meals.forEach(meal => {
-                            const mealCard = document.createElement('div');
-                            mealCard.classList.add('meal-card');
-
-                            mealCard.innerHTML = `
-                                <img src="${meal.strMealThumb}" alt="${meal.strMeal}">
-                                <h2>${meal.strMeal}</h2>
-                                <button onclick="fetchMealDetails(${meal.idMeal}, this)">View Details</button>
-                                <div class="meal-details"></div>
-                            `;
-
-                            mealsContainer.appendChild(mealCard);
-                        });
+                    if (data.meals) {
+                        data.meals.forEach(meal => displayMealCard(meal));
                     } else {
-                        document.getElementById('mealsContainer').innerHTML = '<p>No meals found for this ingredient.</p>';
+                        mealsContainer.innerHTML = '<p>No meals found for this ingredient.</p>';
                     }
                 })
                 .catch(error => {
                     console.error('Error fetching meals:', error);
-                    document.getElementById('mealsContainer').innerHTML = '<p>Sorry, there was an error fetching the meals.</p>';
+                    mealsContainer.innerHTML = '<p>Sorry, there was an error fetching the meals.</p>';
                 });
         }
 
-        // Function to fetch detailed meal information and display in the card
+        // Function to display each meal card
+        function displayMealCard(meal) {
+            const mealCard = document.createElement('div');
+            mealCard.classList.add('meal-card');
+
+            mealCard.innerHTML = `
+                <img src="${meal.strMealThumb}" alt="${meal.strMeal}">
+                <h2>${meal.strMeal}</h2>
+                <button onclick="fetchMealDetails(${meal.idMeal}, this)">View Details</button>
+                <div class="meal-details"></div>
+            `;
+
+            mealsContainer.appendChild(mealCard);
+        }
+
+        // Function to fetch and toggle detailed meal information
         function fetchMealDetails(idMeal, button) {
             const detailsDiv = button.nextElementSibling;
 
-            // Toggle visibility of the meal details section
             if (detailsDiv.style.display === 'block') {
                 detailsDiv.style.display = 'none';
                 button.textContent = 'View Details';
@@ -183,24 +185,16 @@
                 .then(response => response.json())
                 .then(data => {
                     const mealDetails = data.meals[0];
-
-                    // Split instructions into steps and create a list
-                    const steps = mealDetails.strInstructions
-                        .split(/(?<=\.)\s+/)  // Split by period followed by whitespace
-                        .map(step => step.trim())
-                        .filter(Boolean);
-
-                    // Create list HTML from steps
-                    const formattedInstructions = `
-                        <ol>
-                            ${steps.map(step => `<li>${step}</li>`).join('')}
-                        </ol>
-                    `;
+                    const instructions = mealDetails.strInstructions
+                        .split(/(?<=\.)\s+/)
+                        .map(step => `<li>${step.trim()}</li>`)
+                        .join('');
 
                     detailsDiv.innerHTML = `
                         <p><strong>Category:</strong> ${mealDetails.strCategory}</p>
                         <p><strong>Area:</strong> ${mealDetails.strArea}</p>
-                        <p><strong>Instructions:</strong><br>${formattedInstructions}</p>
+                        <p><strong>Instructions:</strong></p>
+                        <ol>${instructions}</ol>
                     `;
                     detailsDiv.style.display = 'block';
                     button.textContent = 'Hide Details';
