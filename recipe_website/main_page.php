@@ -1,168 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meal Finder</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #d4b18b;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .search-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 40px;
-            width: 60%;
-        }
-
-        .search-container input[type="text"] {
-            width: 70%;
-            padding: 10px;
-            margin-right: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 1rem;
-        }
-
-        .search-container input[type="submit"] {
-            background-color: #007bff;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-
-        .search-container input[type="submit"]:hover {
-            background-color: #0056b3;
-        }
-
-        .filters-container {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .filter-option {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 20px;
-            border: 2px solid #ccc;
-            border-radius: 5px;
-            background-color: white;
-            cursor: pointer;
-            transition: background-color 0.3s, border-color 0.3s;
-        }
-
-        .filter-option:hover {
-            background-color: #f5f5f5;
-            border-color: #007bff;
-        }
-
-        .filter-option input[type="radio"] {
-            accent-color: #007bff; /* Customize the radio button color */
-            transform: scale(1.2); /* Enlarge the radio button slightly */
-        }
-
-        .filter-option input[type="radio"]:checked + label {
-            background-color: #007bff;
-            color: white;
-            border-color: #0056b3;
-        }
-
-        .meals-container {
-            width: 60%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .meal-card {
-            background-color: white;
-            width: 100%;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .meal-card .meal-header {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .meal-card img {
-            width: 150px;  /* Fixed image size */
-            height: 150px; /* Ensure all images are the same size */
-            object-fit: cover;
-            border-radius: 10px;
-        }
-
-        .meal-card .meal-details {
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            width: 60%;
-        }
-
-        .meal-card h2 {
-            margin-top: 0;
-            font-size: 1.5rem;
-        }
-
-        .meal-card p {
-            margin: 5px 0;
-        }
-
-        ol {
-            padding-left: 20px;
-        }
-
-        .instructions {
-            display: none;
-            margin-top: 10px;
-        }
-
-        .toggle-instructions-btn {
-            margin-top: 10px;
-            padding: 6px 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            width: 200px;
-            height: 35px;
-            text-align: center;
-            display: inline-flex; /* Inline-flex for aligning text horizontally */
-            justify-content: center; /* Center the text horizontally */
-            align-items: center; /* Vertically center the text */
-            gap: 5px; /* Space between "Show" and "Instructions" */
-        }
-
-        .toggle-instructions-btn:hover {
-            background-color: #0056b3;
-        }
-
-    </style>
+    <link rel="stylesheet" href="recipestyle.css">
 </head>
 <body>
     <!-- Search bar -->
@@ -172,23 +14,16 @@
     </div>
 
     <!-- Filter options -->
-    <!-- Filter options -->
     <div class="filters-container">
         <label class="filter-option">
-            <input type="radio" id="noneFilter" name="dietFilter" value="none" checked>
-            No Filter
-        </label>
-        <label class="filter-option">
-            <input type="radio" id="vegetarianFilter" name="dietFilter" value="vegetarian">
+            <input type="checkbox" id="vegetarianFilter" name="dietFilter" value="vegetarian">
             Vegetarian
         </label>
         <label class="filter-option">
-            <input type="radio" id="veganFilter" name="dietFilter" value="vegan">
+            <input type="checkbox" id="veganFilter" name="dietFilter" value="vegan">
             Vegan
         </label>
     </div>
-
-    
 
     <!-- Meals display area -->
     <div id="mealsContainer" class="meals-container"></div>
@@ -201,13 +36,14 @@
         const nonVeganIngredients = ['egg', 'cheese', 'milk', 'butter', 'cream'];
 
         function fetchFilterMeal() {
-    const userInput = document.getElementById('userInput').value.trim();
-    const dietFilter = document.querySelector('input[name="dietFilter"]:checked').value;
+        const userInput = document.getElementById('userInput').value.trim();
+        const vegetarianFilter = document.getElementById('vegetarianFilter').checked;
+        const veganFilter = document.getElementById('veganFilter').checked;
 
-    if (!userInput) {
-        alert('Please enter an ingredient');
-        return;
-    }
+        if (!userInput) {
+            alert('Please enter an ingredient');
+            return;
+        }
 
         fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${encodeURIComponent(userInput)}`)
             .then(response => response.json())
@@ -222,18 +58,27 @@
 
                     Promise.all(promises)
                         .then(mealsData => {
-                            const filteredMeals = mealsData.filter(mealData => {
-                                const meal = mealData.meals[0];
-                                const ingredients = getIngredients(meal);
+                            let filteredMeals = mealsData.map(mealData => mealData.meals[0]);
 
-                                if (dietFilter === 'vegetarian' && containsNonVegetarian(ingredients)) return false;
-                                if (dietFilter === 'vegan' && containsNonVegan(ingredients)) return false;
+                            // Apply filters if any are selected
+                            if (vegetarianFilter || veganFilter) {
+                                filteredMeals = filteredMeals.filter(meal => {
+                                    const ingredients = getIngredients(meal);
 
-                                return true;
-                            });
+                                    if (vegetarianFilter && containsNonVegetarian(ingredients)) {
+                                        return false;
+                                    }
+
+                                    if (veganFilter && (containsNonVegetarian(ingredients) || containsNonVegan(ingredients))) {
+                                        return false;
+                                    }
+
+                                    return true;
+                                });
+                            }
 
                             if (filteredMeals.length > 0) {
-                                filteredMeals.forEach(mealData => displayMealCard(mealData.meals[0]));
+                                filteredMeals.forEach(meal => displayMealCard(meal));
                             } else {
                                 mealsContainer.innerHTML = '<p>No meals found for the selected filters.</p>';
                             }
@@ -247,7 +92,6 @@
                 mealsContainer.innerHTML = '<p>Sorry, there was an error fetching the meals.</p>';
             });
     }
-
 
         function displayMealCard(meal) {
             const mealCard = document.createElement('div');
