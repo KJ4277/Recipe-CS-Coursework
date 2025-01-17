@@ -25,6 +25,10 @@
         </label>
     </div>
 
+    <!-- Suggestions container -->
+    <div id="suggestionsContainer" class="suggestions-container"></div>
+
+
     <!-- Meals display area -->
     <div id="mealsContainer" class="meals-container"></div>
 
@@ -32,8 +36,10 @@
         const mealsContainer = document.getElementById('mealsContainer');
 
         // Lists of known non-vegetarian and non-vegan ingredients
-        const nonVegetarianIngredients = ['chicken', 'beef', 'pork', 'fish', 'duck', 'lamb'];
-        const nonVeganIngredients = ['egg', 'cheese', 'milk', 'butter', 'cream'];
+        const nonVegetarianIngredients = ['chicken', 'beef', 'pork', 'fish', 'duck', 'lamb', 'bacon',
+                                          'salmon', 'cod', 'prawns', 'king_prawn', 'shrimp', 'haddock']
+                                          
+        const nonVeganIngredients = ['egg', 'eggs', 'cheese', 'milk', 'butter', 'cream', 'mozzarella', 'parmesan', 'ricotta'];
 
         function fetchFilterMeal() {
         const userInput = document.getElementById('userInput').value.trim();
@@ -159,6 +165,47 @@
                 nonVeganIngredients.some(nonVegan => ingredient.toLowerCase().includes(nonVegan))
             );
         }
+
+        function displayRandomSuggestions() {
+            const suggestionsContainer = document.getElementById('suggestionsContainer');
+
+            // Fetch the list of all ingredients from the API
+            fetch('https://www.themealdb.com/api/json/v1/1/list.php?i=list')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.meals) {
+                        const ingredients = data.meals.map(meal => meal.strIngredient);
+
+                        // Shuffle and pick 5 random ingredients
+                        const randomSuggestions = ingredients
+                            .sort(() => 0.5 - Math.random())
+                            .slice(0, 5);
+
+                        // Render suggestions
+                        suggestionsContainer.innerHTML = `
+                            <p>Try these ingredients:</p>
+                            <ul class="suggestions-list">
+                                ${randomSuggestions.map(ingredient => `<li onclick="fillSearch('${ingredient}')">${ingredient}</li>`).join('')}
+                            </ul>
+                        `;
+                    } else {
+                        suggestionsContainer.innerHTML = '<p>Unable to fetch suggestions at the moment.</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching ingredient suggestions:', error);
+                    suggestionsContainer.innerHTML = '<p>Error fetching ingredient suggestions.</p>';
+                });
+        }
+
+        function fillSearch(ingredient) {
+            document.getElementById('userInput').value = ingredient;
+            fetchFilterMeal(); // Trigger the search
+        }
+
+        // Call displayRandomSuggestions on page load
+        document.addEventListener('DOMContentLoaded', displayRandomSuggestions);
+
     </script>
 </body>
 </html>
