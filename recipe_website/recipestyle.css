@@ -3,10 +3,28 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #c1caff;
+    background-color: rgb(156, 171, 255);
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.account-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.account-button:hover {
+    background-color: #0056b3;
 }
 
 .search-container {
@@ -33,6 +51,7 @@ body {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-weight: bold;
     font-size: 1rem;
 }
 
@@ -64,9 +83,9 @@ body {
     border-color: #007bff;
 }
 
-.filter-option input[type="radio"] {
-    accent-color: #007bff; /* Customize the radio button color */
-    transform: scale(1.2); /* Enlarge the radio button slightly */
+.filter-option input[type="checkbox"] {
+    accent-color: #007bff; 
+    transform: scale(1.2);
 }
 
 .filter-option input[type="radio"]:checked + label {
@@ -92,6 +111,7 @@ body {
     padding: 20px;
     display: flex;
     flex-direction: column;
+    margin-bottom: 10px;
 }
 
 .meal-card .meal-header {
@@ -158,12 +178,11 @@ ol {
 .suggestions-container {
     margin: 20px 0;
     text-align: center;
-    width: 60%;
-}
-
-.suggestions-container p {
-    font-weight: bold;
-    margin-bottom: 10px;
+    width: 33%;  /* Reduced from 60% */
+    background-color: white;
+    padding: 13px;  /* Reduced from 20px */
+    border-radius: 13px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .suggestions-list {
@@ -186,4 +205,3 @@ ol {
 .suggestions-list li:hover {
     background-color: #0056b3;
 }
-
