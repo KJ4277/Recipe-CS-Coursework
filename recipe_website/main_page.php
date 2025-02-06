@@ -118,6 +118,7 @@
                         <p><strong>Area:</strong> ${meal.strArea}</p>
                         <p><strong>Ingredients:</strong> ${ingredients.join(', ')}</p>
                     </div>
+                    <button class="save-recipe-btn">&#9733;</button>
                 </div>
                 <div class="instructions">
                     <p><strong>Instructions:</strong></p>
@@ -128,6 +129,8 @@
 
             mealsContainer.appendChild(mealCard);
         }
+
+
 
         function getIngredients(meal) {
             const ingredients = [];
