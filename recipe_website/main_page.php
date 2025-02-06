@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="recipestyle.css">
 </head>
 <body>
+    <!--Account Button-->
+    <a href="account.html" class="account-button">Account</a>
+
     <!-- Search bar -->
     <div class="search-container">
         <input type="text" id="userInput" name="userInput" placeholder="Enter an ingredient" />
@@ -37,9 +40,10 @@
 
         // Lists of known non-vegetarian and non-vegan ingredients
         const nonVegetarianIngredients = ['chicken', 'beef', 'pork', 'fish', 'duck', 'lamb', 'bacon',
-                                          'salmon', 'cod', 'prawns', 'king_prawn', 'shrimp', 'haddock']
+                                          'salmon', 'cod', 'prawns', 'king_prawn', 'shrimp', 'haddock',
+                                           'sausage']
                                           
-        const nonVeganIngredients = ['egg', 'eggs', 'cheese', 'milk', 'butter', 'cream', 'mozzarella', 'parmesan', 'ricotta'];
+        const nonVeganIngredients = ['egg', 'eggs', 'cheese', 'milk', 'butter', 'cream', 'mozzarella', 'parmesan', 'ricotta', 'paneer'];
 
         function fetchFilterMeal() {
         const userInput = document.getElementById('userInput').value.trim();
