@@ -9,6 +9,39 @@ body {
     align-items: center;
 }
 
+.meal-header {
+    position: relative;
+}
+
+.save-recipe-btn {
+    background-color: white;
+    border: 3px solid gold;
+    color: gold;
+    font-size: 30px; /* Star size */
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 50px; /* Circle width */
+    height: 50px; /* Circle height */
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Ensures vertical centering */
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Slight shadow */
+    line-height: 0; /* Resets line height to center the star */
+}
+
+.save-recipe-btn:hover {
+    background-color: gold;
+    color: white;
+    transform: scale(1.1);
+}
+
+
+}
+
 .account-button {
     position: absolute;
     top: 20px;
