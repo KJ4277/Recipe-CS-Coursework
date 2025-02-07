@@ -41,9 +41,11 @@
         // Lists of known non-vegetarian and non-vegan ingredients
         const nonVegetarianIngredients = ['chicken', 'beef', 'pork', 'fish', 'duck', 'lamb', 'bacon',
                                           'salmon', 'cod', 'prawns', 'king_prawn', 'shrimp', 'haddock',
-                                           'sausage']
+                                           'sausage', 'ham', 'herring', ]
                                           
-        const nonVeganIngredients = ['egg', 'eggs', 'cheese', 'milk', 'butter', 'cream', 'mozzarella', 'parmesan', 'ricotta', 'paneer'];
+        const nonVeganIngredients = ['egg', 'eggs', 'cheese', 'milk', 'butter', 'cream', 'mozzarella', 
+                                     'parmesan', 'ricotta', 'paneer', 'feta', 'mayonnaise', 'cream', 
+                                     'ricotta'];
 
         function fetchFilterMeal() {
         const userInput = document.getElementById('userInput').value.trim();
