@@ -4,31 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Recipe Website</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        body {
-            background-color:rgb(219, 190, 147);
-            font-family: Arial, sans-serif;
-        }
-        .login-container {
-            max-width: 400px;
-            margin: 100px auto;
-            padding: 30px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        .login-container h1 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .login-container button {
-            width: 100%;
-        }
-        .login-container .alert {
-            text-align: center;
-        }
-    </style>
+    <link rel="stylesheet" href="recipestyle.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body>
 
@@ -42,14 +19,16 @@
     }
     ?>
 
-    <form action="authenticate.php" method="POST">
+    <form action="authenticate.php" method="POST" onsubmit="return validateForm()">
         <div class="form-group">
             <label for="username">Username</label>
             <input type="text" class="form-control" name="username" id="username" required>
+            <small id="username-error" class="text-danger"></small>
         </div>
         <div class="form-group">
             <label for="password">Password</label>
             <input type="password" class="form-control" name="password" id="password" required>
+            <small id="password-error" class="text-danger"></small>
         </div>
         <button type="submit" class="btn btn-primary">Login</button>
     </form>
@@ -58,6 +37,43 @@
         <a href="add_user.php">Don't have an account? Register here.</a>
     </div>
 </div>
+
+<script>
+    function validateForm() {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const usernameError = document.getElementById('username-error');
+        const passwordError = document.getElementById('password-error');
+
+        // Reset error messages
+        usernameError.textContent = '';
+        passwordError.textContent = '';
+
+        let valid = true;
+
+        // Username validation
+        if (username.length < 5 || username.length > 20) {
+            usernameError.textContent = 'Username must be between 5 and 20 characters.';
+            valid = false;
+        }
+        if (!/^[a-zA-Z0-9]+$/.test(username)) {
+            usernameError.textContent = 'Username can only contain letters and numbers.';
+            valid = false;
+        }
+
+        // Password validation
+        if (password.length < 8 || password.length > 30) {
+            passwordError.textContent = 'Password must be between 8 and 30 characters.';
+            valid = false;
+        }
+        if (!/^[a-zA-Z0-9]+$/.test(password)) {
+            passwordError.textContent = 'Password can only contain letters and numbers.';
+            valid = false;
+        }
+
+        return valid;
+    }
+</script>
 
 </body>
 </html>
