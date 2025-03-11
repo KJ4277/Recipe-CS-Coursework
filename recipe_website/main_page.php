@@ -1,3 +1,13 @@
+<?php
+session_start();
+
+// Check if the user is logged in
+if (!isset($_SESSION['username'])) {
+    header("Location: login.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,7 +17,7 @@
     <link rel="stylesheet" href="recipestyle.css">
 </head>
 <body>
-    <!--Account Button-->
+    <!-- Account Button -->
     <a href="account.html" class="account-button">Account</a>
 
     <!-- Search bar -->
@@ -15,6 +25,9 @@
         <input type="text" id="userInput" name="userInput" placeholder="Enter an ingredient" />
         <input type="submit" onclick="fetchFilterMeal();" value="Search" />
     </div>
+
+    <!-- Suggestions container -->
+    <div id="suggestionsContainer" class="suggestions-container"></div>
 
     <!-- Filter options -->
     <div class="filters-container">
@@ -28,10 +41,6 @@
         </label>
     </div>
 
-    <!-- Suggestions container -->
-    <div id="suggestionsContainer" class="suggestions-container"></div>
-
-
     <!-- Meals display area -->
     <div id="mealsContainer" class="meals-container"></div>
 
@@ -41,69 +50,69 @@
         // Lists of known non-vegetarian and non-vegan ingredients
         const nonVegetarianIngredients = ['chicken', 'beef', 'pork', 'fish', 'duck', 'lamb', 'bacon',
                                           'salmon', 'cod', 'prawns', 'king_prawn', 'shrimp', 'haddock',
-                                           'sausage', 'ham', 'herring', ]
-                                          
+                                           'sausage', 'ham', 'herring'];
+
         const nonVeganIngredients = ['egg', 'eggs', 'cheese', 'milk', 'butter', 'cream', 'mozzarella', 
                                      'parmesan', 'ricotta', 'paneer', 'feta', 'mayonnaise', 'cream', 
                                      'ricotta'];
 
         function fetchFilterMeal() {
-        const userInput = document.getElementById('userInput').value.trim();
-        const vegetarianFilter = document.getElementById('vegetarianFilter').checked;
-        const veganFilter = document.getElementById('veganFilter').checked;
+            const userInput = document.getElementById('userInput').value.trim();
+            const vegetarianFilter = document.getElementById('vegetarianFilter').checked;
+            const veganFilter = document.getElementById('veganFilter').checked;
 
-        if (!userInput) {
-            alert('Please enter an ingredient');
-            return;
+            if (!userInput) {
+                alert('Please enter an ingredient');
+                return;
+            }
+
+            fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${encodeURIComponent(userInput)}`)
+                .then(response => response.json())
+                .then(data => {
+                    mealsContainer.innerHTML = '';
+
+                    if (data.meals) {
+                        const promises = data.meals.map(meal =>
+                            fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${meal.idMeal}`)
+                                .then(response => response.json())
+                        );
+
+                        Promise.all(promises)
+                            .then(mealsData => {
+                                let filteredMeals = mealsData.map(mealData => mealData.meals[0]);
+
+                                // Apply filters if any are selected
+                                if (vegetarianFilter || veganFilter) {
+                                    filteredMeals = filteredMeals.filter(meal => {
+                                        const ingredients = getIngredients(meal);
+
+                                        if (vegetarianFilter && containsNonVegetarian(ingredients)) {
+                                            return false;
+                                        }
+
+                                        if (veganFilter && (containsNonVegetarian(ingredients) || containsNonVegan(ingredients))) {
+                                            return false;
+                                        }
+
+                                        return true;
+                                    });
+                                }
+
+                                if (filteredMeals.length > 0) {
+                                    filteredMeals.forEach(meal => displayMealCard(meal));
+                                } else {
+                                    mealsContainer.innerHTML = '<p>No meals found for the selected filters.</p>';
+                                }
+                            });
+                    } else {
+                        mealsContainer.innerHTML = '<p>No meals found for this ingredient.</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching meals:', error);
+                    mealsContainer.innerHTML = '<p>Sorry, there was an error fetching the meals.</p>';
+                });
         }
-
-        fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${encodeURIComponent(userInput)}`)
-            .then(response => response.json())
-            .then(data => {
-                mealsContainer.innerHTML = '';
-
-                if (data.meals) {
-                    const promises = data.meals.map(meal =>
-                        fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${meal.idMeal}`)
-                            .then(response => response.json())
-                    );
-
-                    Promise.all(promises)
-                        .then(mealsData => {
-                            let filteredMeals = mealsData.map(mealData => mealData.meals[0]);
-
-                            // Apply filters if any are selected
-                            if (vegetarianFilter || veganFilter) {
-                                filteredMeals = filteredMeals.filter(meal => {
-                                    const ingredients = getIngredients(meal);
-
-                                    if (vegetarianFilter && containsNonVegetarian(ingredients)) {
-                                        return false;
-                                    }
-
-                                    if (veganFilter && (containsNonVegetarian(ingredients) || containsNonVegan(ingredients))) {
-                                        return false;
-                                    }
-
-                                    return true;
-                                });
-                            }
-
-                            if (filteredMeals.length > 0) {
-                                filteredMeals.forEach(meal => displayMealCard(meal));
-                            } else {
-                                mealsContainer.innerHTML = '<p>No meals found for the selected filters.</p>';
-                            }
-                        });
-                } else {
-                    mealsContainer.innerHTML = '<p>No meals found for this ingredient.</p>';
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching meals:', error);
-                mealsContainer.innerHTML = '<p>Sorry, there was an error fetching the meals.</p>';
-            });
-    }
 
         function displayMealCard(meal) {
             const mealCard = document.createElement('div');
@@ -131,8 +140,6 @@
 
             mealsContainer.appendChild(mealCard);
         }
-
-
 
         function getIngredients(meal) {
             const ingredients = [];
@@ -214,7 +221,6 @@
 
         // Call displayRandomSuggestions on page load
         document.addEventListener('DOMContentLoaded', displayRandomSuggestions);
-
     </script>
 </body>
 </html>
