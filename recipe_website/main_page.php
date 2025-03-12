@@ -18,7 +18,9 @@ if (!isset($_SESSION['username'])) {
 </head>
 <body>
     <!-- Account Button -->
-    <a href="account.html" class="account-button">Account</a>
+    <a href="account.html" class="account-button">
+        <img src="accountlogo.png" alt="Account">
+      </a>
 
     <!-- Search bar -->
     <div class="search-container">
