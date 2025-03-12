@@ -28,19 +28,21 @@ if (!isset($_SESSION['username'])) {
         <input type="submit" onclick="fetchFilterMeal();" value="Search" />
     </div>
 
-    <!-- Suggestions container -->
-    <div id="suggestionsContainer" class="suggestions-container"></div>
+    <div class="filters-suggestions-wrapper">
+        <!-- Suggestions container -->
+        <div id="suggestionsContainer" class="suggestions-container"></div>
 
-    <!-- Filter options -->
-    <div class="filters-container">
-        <label class="filter-option">
-            <input type="checkbox" id="vegetarianFilter" name="dietFilter" value="vegetarian">
-            Vegetarian
-        </label>
-        <label class="filter-option">
-            <input type="checkbox" id="veganFilter" name="dietFilter" value="vegan">
-            Vegan
-        </label>
+        <!-- Filter options -->
+        <div class="filters-container">
+            <label class="filter-option">
+                <input type="checkbox" id="vegetarianFilter" name="dietFilter" value="vegetarian">
+                Vegetarian
+            </label>
+            <label class="filter-option">
+                <input type="checkbox" id="veganFilter" name="dietFilter" value="vegan">
+                Vegan
+            </label>
+        </div>
     </div>
 
     <!-- Meals display area -->
