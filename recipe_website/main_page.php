@@ -42,6 +42,10 @@ if (!isset($_SESSION['username'])) {
                 <input type="checkbox" id="veganFilter" name="dietFilter" value="vegan">
                 Vegan
             </label>
+            <label class="filter-option">
+                <input type="checkbox" id="glutenfreeFilter" name="dietFilter" value="glutenfree">
+                Gluten-Free
+            </label>
         </div>
     </div>
 
@@ -51,7 +55,7 @@ if (!isset($_SESSION['username'])) {
     <script>
         const mealsContainer = document.getElementById('mealsContainer');
 
-        // Lists of known non-vegetarian and non-vegan ingredients
+        // Lists of known non-vegetarian, non-vegan, and gluten-containing ingredients
         const nonVegetarianIngredients = ['chicken', 'beef', 'pork', 'fish', 'duck', 'lamb', 'bacon',
                                           'salmon', 'cod', 'prawns', 'king_prawn', 'shrimp', 'haddock',
                                            'sausage', 'ham', 'herring'];
@@ -60,10 +64,18 @@ if (!isset($_SESSION['username'])) {
                                      'parmesan', 'ricotta', 'paneer', 'feta', 'mayonnaise', 'cream', 
                                      'ricotta'];
 
+        const glutenIngredients = ['wheat', 'barley', 'rye', 'triticale', 'malt', 'spelt', 'farro', 
+                                   'kamut', 'semolina', 'couscous', 'soy sauce', 'teriyaki sauce', 
+                                   'stout', 'breadcrumbs', 'croutons', 'flour', 'pastry', 'pasta', 
+                                   'noodles', 'cake', 'cookies', 'crackers', 'pretzels', 'pie crust', 
+                                   'pizza dough', 'wraps', 'tortillas', 'stuffing', 'dressing', 
+                                   'digestive biscuits'];
+
         function fetchFilterMeal() {
             const userInput = document.getElementById('userInput').value.trim();
             const vegetarianFilter = document.getElementById('vegetarianFilter').checked;
             const veganFilter = document.getElementById('veganFilter').checked;
+            const glutenfreeFilter = document.getElementById('glutenfreeFilter').checked;
 
             if (!userInput) {
                 alert('Please enter an ingredient');
@@ -86,7 +98,7 @@ if (!isset($_SESSION['username'])) {
                                 let filteredMeals = mealsData.map(mealData => mealData.meals[0]);
 
                                 // Apply filters if any are selected
-                                if (vegetarianFilter || veganFilter) {
+                                if (vegetarianFilter || veganFilter || glutenfreeFilter) {
                                     filteredMeals = filteredMeals.filter(meal => {
                                         const ingredients = getIngredients(meal);
 
@@ -95,6 +107,10 @@ if (!isset($_SESSION['username'])) {
                                         }
 
                                         if (veganFilter && (containsNonVegetarian(ingredients) || containsNonVegan(ingredients))) {
+                                            return false;
+                                        }
+
+                                        if (glutenfreeFilter && containsGluten(ingredients)) {
                                             return false;
                                         }
 
@@ -183,6 +199,12 @@ if (!isset($_SESSION['username'])) {
         function containsNonVegan(ingredients) {
             return ingredients.some(ingredient =>
                 nonVeganIngredients.some(nonVegan => ingredient.toLowerCase().includes(nonVegan))
+            );
+        }
+
+        function containsGluten(ingredients) {
+            return ingredients.some(ingredient =>
+                glutenIngredients.some(gluten => ingredient.toLowerCase().includes(gluten))
             );
         }
 
