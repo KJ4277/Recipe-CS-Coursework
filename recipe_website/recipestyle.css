@@ -217,7 +217,7 @@ ol {
     background-color: #007bff;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 25px;
     cursor: pointer;
     font-size: 0.9rem;
     width: 200px;
@@ -227,17 +227,21 @@ ol {
     justify-content: center; /* Center the text horizontally */
     align-items: center; /* Vertically center the text */
     gap: 5px; /* Space between "Show" and "Instructions" */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effect */
+    
 }
 
 .toggle-instructions-btn:hover {
+    transform: translateY(3px); /* Slight lift on hover */
     background-color: #0056b3;
+    transform: scale(1.05); /* Slight scale-up on hover */
 }
     
 /* Suggestions Container */
 .suggestions-container {
     margin: 20px 0;
     text-align: center;
-    width: 40%;
+    width: 30%;
     background-color: white;
     padding: 20px;
     border-radius: 15px;
@@ -291,4 +295,3 @@ ol {
     width: 60%; /* Match the width of other centered elements */
     margin: 0 auto; /* Center the wrapper */
 }
-
