@@ -120,11 +120,6 @@ body {
 }
 
 .save-recipe-btn {
-    background-color: white;
-    border: 3px solid gold;
-    color: gold;
-    font-size: 30px;
-    cursor: pointer;
     position: absolute;
     top: 10px;
     right: 10px;
@@ -134,15 +129,34 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: background-color 0.3s, transform 0.2s;
+    font-size: 30px;
+    cursor: pointer;
+    border: 3px solid gold;
+    background-color: white;
+    color: gold;
+    transition: all 0.3s ease;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     line-height: 0;
+    padding: 0;
+    margin: 0;
+    outline: none;
 }
 
-.save-recipe-btn:hover {
+.save-recipe-btn.favorited {
+    background-color: gold !important;
+    color: white !important;
+    border-color: gold;
+}
+
+.save-recipe-btn:not(.favorited):hover {
     background-color: gold;
     color: white;
-    transform: scale(1.3);
+    transform: scale(1.2);
+}
+
+.save-recipe-btn.favorited:hover {
+    transform: scale(1.1);
+    opacity: 0.9;
 }
 
 .account-button {
