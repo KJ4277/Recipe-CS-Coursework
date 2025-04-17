@@ -1,20 +1,120 @@
-
+/* Combined CSS File */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: rgb(156, 171, 255); /* Fallback color */
-    background-image: url('bg.jpeg'); /* Path to your image */
-    background-size: cover; /* Ensures the image covers the entire background */
-    background-position: center; /* Centers the image */
-    background-repeat: no-repeat; /* Prevents the image from repeating */
-    background-attachment: fixed; /* Optional: Makes the background fixed while scrolling */
-    min-height: 100vh; /* Ensures the body takes up at least the full viewport height */
+    background-color: rgb(156, 171, 255);
+    background-image: url('bg.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
+/* Login Page Styles */
+.login-container {
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+    margin: 40px auto;
+    text-align: center;
+}
+
+.login-container h1 {
+    color: #333;
+    margin-bottom: 30px;
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #555;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: #f9f9f9;
+    transition: all 0.3s;
+    box-sizing: border-box;
+}
+
+.input-group input:focus {
+    border-color: rgb(156, 171, 255);
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(156, 171, 255, 0.25);
+    background-color: white;
+}
+
+.login-button {
+    width: 100%;
+    padding: 12px;
+    background-color: rgb(156, 171, 255);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.login-button:hover {
+    background-color: rgb(120, 140, 255);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.register-link {
+    display: block;
+    margin-top: 20px;
+    color: rgb(156, 171, 255);
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.register-link:hover {
+    color: rgb(120, 140, 255);
+    text-decoration: underline;
+}
+
+.text-danger {
+    color: #dc3545;
+    font-size: 0.9rem;
+    margin-top: 5px;
+    display: block;
+}
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+}
+
+/* Existing Recipe Page Styles */
 .meal-header {
     position: relative;
 }
@@ -23,20 +123,20 @@ body {
     background-color: white;
     border: 3px solid gold;
     color: gold;
-    font-size: 30px; /* Star size */
+    font-size: 30px;
     cursor: pointer;
     position: absolute;
     top: 10px;
     right: 10px;
-    width: 50px; /* Circle width */
-    height: 50px; /* Circle height */
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     display: flex;
     justify-content: center;
-    align-items: center; /* Ensures vertical centering */
+    align-items: center;
     transition: background-color 0.3s, transform 0.2s;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Slight shadow */
-    line-height: 0; /* Resets line height to center the star */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    line-height: 0;
 }
 
 .save-recipe-btn:hover {
@@ -52,26 +152,26 @@ body {
     top: 20px;
     right: 20px;
     color: white;
-    padding: 0; /* Remove padding to ensure the image fits */
+    padding: 0;
     border-radius: 5px;
     text-decoration: none;
     font-size: 1rem;
     font-weight: bold;
-    transition: transform 0.3s; /* Smooth scaling on hover */
+    transition: transform 0.3s;
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden; /* Ensure the image doesn't overflow */
+    overflow: hidden;
 }
 
 .account-button img {
-    width: 100%; /* Make the image fill the button */
-    height: 100%; /* Make the image fill the button */
-    object-fit: cover; /* Ensure the image scales properly */
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .account-button:hover {
-    transform: scale(1.3); /* Scale the button on hover */
+    transform: scale(1.3);
 }
 
 .search-container {
@@ -106,18 +206,15 @@ body {
     background-color: #0056b3;
 }
 
-/* Filters Container */
-
 .filters-container {
     display: flex;
-    flex-direction: column; /* Stack filters vertically */
-    gap: 10px; /* Space between filter options */
+    flex-direction: column;
+    gap: 10px;
     background-color: white;
     padding: 15px;
     border-radius: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin: 20px;
-
 }
 
 .filter-option {
@@ -126,7 +223,7 @@ body {
     gap: 8px;
     padding: 12px 20px;
     border: 2px solid #ddd;
-    border-radius: 25px; /* Rounded pill shape */
+    border-radius: 25px;
     background-color: white;
     cursor: pointer;
     transition: background-color 0.3s, border-color 0.3s, transform 0.2s;
@@ -138,7 +235,7 @@ body {
 .filter-option:hover {
     background-color: #f5f5f5;
     border-color: #007bff;
-    transform: translateY(-3px); /* Slight lift on hover */
+    transform: translateY(-3px);
 }
 
 .filter-option input[type="checkbox"] {
@@ -180,8 +277,8 @@ body {
 }
 
 .meal-card img {
-    width: 150px;  /* Fixed image size */
-    height: 150px; /* Ensure all images are the same size */
+    width: 150px;
+    height: 150px;
     object-fit: cover;
     border-radius: 10px;
 }
@@ -223,21 +320,18 @@ ol {
     width: 200px;
     height: 35px;
     text-align: center;
-    display: inline-flex; /* Inline-flex for aligning text horizontally */
-    justify-content: center; /* Center the text horizontally */
-    align-items: center; /* Vertically center the text */
-    gap: 5px; /* Space between "Show" and "Instructions" */
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effect */
-    
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .toggle-instructions-btn:hover {
-    transform: translateY(3px); /* Slight lift on hover */
     background-color: #0056b3;
-    transform: scale(1.05); /* Slight scale-up on hover */
+    transform: scale(1.05);
 }
-    
-/* Suggestions Container */
+
 .suggestions-container {
     margin: 20px 0;
     text-align: center;
@@ -245,12 +339,12 @@ ol {
     background-color: white;
     padding: 20px;
     border-radius: 15px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Softer shadow */
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effect */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .suggestions-container:hover {
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 .suggestions-container h3 {
@@ -266,15 +360,14 @@ ol {
     gap: 10px;
     list-style-type: none;
     padding: 0;
-    flex-wrap: wrap; /* Allow wrapping for smaller screens */
+    flex-wrap: wrap;
 }
 
 .suggestions-list li {
-    transform: translateY(3px); /* Slight lift on hover */
     background-color: #007bff;
     color: white;
     padding: 8px 15px;
-    border-radius: 25px; /* Rounded pill shape */
+    border-radius: 25px;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.2s;
     font-size: 0.9rem;
@@ -283,15 +376,14 @@ ol {
 
 .suggestions-list li:hover {
     background-color: #0056b3;
-    transform: scale(1.05); /* Slight scale-up on hover */
+    transform: scale(1.05);
 }
 
-/* Wrapper for filters and suggestions */
 .filters-suggestions-wrapper {
     display: flex;
     justify-content: center;
-    align-items: stretch; /* Align items to the top */
-    gap: 20px; /* Space between filters and suggestions */
-    width: 60%; /* Match the width of other centered elements */
-    margin: 0 auto; /* Center the wrapper */
+    align-items: stretch;
+    gap: 20px;
+    width: 60%;
+    margin: 0 auto;
 }
