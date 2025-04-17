@@ -63,12 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['meal_id'])) {
     <title>Meal Finder</title>
     <link rel="stylesheet" href="recipestyle.css">
     <!-- NEW: Favorite button style -->
-    <style>
-        .save-recipe-btn.favorited {
-            color: gold;
-            text-shadow: 0 0 3px rgba(0,0,0,0.5);
-        }
-    </style>
+
 </head>
 <body>
     <!-- Account Button (UNCHANGED) -->
