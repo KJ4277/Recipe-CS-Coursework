@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['meal_id'])) {
 </head>
 <body>
     <!-- Account Button (UNCHANGED) -->
-    <a href="account.html" class="account-button">
+    <a href="accountpage.php" class="account-button">
         <img src="accountlogo.png" alt="Account">
     </a>
 
