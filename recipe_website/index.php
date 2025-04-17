@@ -1,40 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Recipe Website</title>
-</head>
-<body>
-    <?php
-       echo nl2br("linked text from index.php. \n"); 
+<?php
+session_start();
 
-       // Include the database connection
-       include_once 'link_recipe_website.php';
+// Redirect to login if not authenticated
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit();
+}
 
-       // SQL query to insert data
-       $sql = "INSERT INTO users (username, email, password)
-               VALUES ('Krish', '123@gmail.com', 'qwerty')";
-    
-        // Execute the query
-       if (mysqli_query($mysqli, $sql)) {
-        echo "Record inserted successfully!";
-    } else {
-        echo "Error inserting record: " . mysqli_error($mysqli);
-    }
-
-    ?>
-</body>
-</html>
-
-
-
-
-
-
-
-
-
-
-
-
-
+// If already logged in, redirect to main page
+header("Location: main.php");
+exit();
+?>
