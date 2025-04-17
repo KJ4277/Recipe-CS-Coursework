@@ -5,75 +5,91 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Recipe Website</title>
     <link rel="stylesheet" href="recipestyle.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body>
+    <div class="login-container">
+        <h1>Login</h1>
+        
+        <?php
+            session_start();
+            $db = new mysqli('localhost', 'root', '', 'recipe_website');
 
-<div class="login-container">
-    <h1>Login</h1>
-    
-    <?php
-    // Display any error message if provided
-    if (isset($_GET['error'])) {
-        echo "<div class='alert alert-danger'>Invalid username or password.</div>";
-    }
-    ?>
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $username = $db->real_escape_string($_POST['username']);
+                $password = $_POST['password']; // You should hash this in production
 
-    <form action="authenticate.php" method="POST" onsubmit="return validateForm()">
-        <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" class="form-control" name="username" id="username" required>
-            <small id="username-error" class="text-danger"></small>
-        </div>
-        <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" class="form-control" name="password" id="password" required>
-            <small id="password-error" class="text-danger"></small>
-        </div>
-        <button type="submit" class="btn btn-primary">Login</button>
-    </form>
-    
-    <div class="text-center mt-3">
-        <a href="add_user.php">Don't have an account? Register here.</a>
+                $result = $db->query("SELECT user_id, username, password FROM users WHERE username = '$username'");
+                
+                if ($result->num_rows > 0) {
+                    $user = $result->fetch_assoc();
+                    if (password_verify($password, $user['password'])) {
+                        $_SESSION['user_id'] = $user['user_id']; // Make sure this matches your column name
+                        $_SESSION['username'] = $user['username'];
+                        header("Location: main_page.php");
+                        exit();
+                    } else {
+                        $error = "Invalid credentials";
+                    }
+                } else {
+                    $error = "Invalid credentials";
+                }
+            }
+        ?>
+
+        <form action="login.php" method="POST" onsubmit="return validateForm()">
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+                <small id="username-error" style="color: #dc3545; font-size: 0.9rem;"></small>
+            </div>
+            
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+                <small id="password-error" style="color: #dc3545; font-size: 0.9rem;"></small>
+            </div>
+            
+            <button type="submit" class="login-button">Login</button>
+        </form>
+        
+        <a href="add_user.php" class="register-link">Don't have an account? Register here</a>
     </div>
-</div>
 
-<script>
-    function validateForm() {
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-        const usernameError = document.getElementById('username-error');
-        const passwordError = document.getElementById('password-error');
+    <script>
+        function validateForm() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const usernameError = document.getElementById('username-error');
+            const passwordError = document.getElementById('password-error');
 
-        // Reset error messages
-        usernameError.textContent = '';
-        passwordError.textContent = '';
+            // Reset error messages
+            usernameError.textContent = '';
+            passwordError.textContent = '';
 
-        let valid = true;
+            let valid = true;
 
-        // Username validation
-        if (username.length < 5 || username.length > 20) {
-            usernameError.textContent = 'Username must be between 5 and 20 characters.';
-            valid = false;
+            // Username validation
+            if (username.length < 5 || username.length > 20) {
+                usernameError.textContent = 'Username must be between 5 and 20 characters.';
+                valid = false;
+            }
+            if (!/^[a-zA-Z0-9]+$/.test(username)) {
+                usernameError.textContent = 'Username can only contain letters and numbers.';
+                valid = false;
+            }
+
+            // Password validation
+            if (password.length < 8 || password.length > 30) {
+                passwordError.textContent = 'Password must be between 8 and 30 characters.';
+                valid = false;
+            }
+            if (!/^[a-zA-Z0-9]+$/.test(password)) {
+                passwordError.textContent = 'Password can only contain letters and numbers.';
+                valid = false;
+            }
+
+            return valid;
         }
-        if (!/^[a-zA-Z0-9]+$/.test(username)) {
-            usernameError.textContent = 'Username can only contain letters and numbers.';
-            valid = false;
-        }
-
-        // Password validation
-        if (password.length < 8 || password.length > 30) {
-            passwordError.textContent = 'Password must be between 8 and 30 characters.';
-            valid = false;
-        }
-        if (!/^[a-zA-Z0-9]+$/.test(password)) {
-            passwordError.textContent = 'Password can only contain letters and numbers.';
-            valid = false;
-        }
-
-        return valid;
-    }
-</script>
-
+    </script>
 </body>
 </html>
