@@ -401,3 +401,113 @@ ol {
     width: 60%;
     margin: 0 auto;
 }
+
+/* Account Page Specific Styles */
+.account-container {
+    width: 80%;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 30px;
+}
+
+.account-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.account-title {
+    margin: 0;
+}
+
+.back-button {
+    background-color: rgb(156, 171, 255);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.back-button:hover {
+    background-color: rgb(120, 140, 255);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.logout-button {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.logout-button:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.account-content {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 30px;
+}
+
+.account-section {
+    margin-bottom: 30px;
+}
+
+.section-title {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.no-favorites {
+    font-style: italic;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Account Form Styles */
+.account-form .input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.update-button {
+    width: 100%;
+}
+
+/* Saved Recipes Section */
+.saved-recipes {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+}
+
+.remove-favorite {
+    margin-top: 10px;
+    padding: 8px 15px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.remove-favorite:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+}
+
