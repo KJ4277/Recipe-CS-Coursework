@@ -1,9 +1,8 @@
-
 <?php
 session_start();
 
 // Redirect if not logged in
-if (!isset($_SESSION['user_id']) || !isset($_SESSION['username'])) {
+if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit();
 }
@@ -113,7 +112,6 @@ if (isset($_GET['logout'])) {
     exit();
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -121,183 +119,143 @@ if (isset($_GET['logout'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Account - Recipe Finder</title>
     <link rel="stylesheet" href="recipestyle.css">
-    <style>
-        .account-container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-        }
-        .account-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #eee;
-        }
-        .back-button, .logout-button {
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        .back-button {
-            background: #f0f0f0;
-            color: #333;
-        }
-        .logout-button {
-            background: #dc3545;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        .account-sections {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 2rem;
-        }
-        .user-details-form input {
-            width: 100%;
-            padding: 0.5rem;
-            margin-bottom: 1rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        .update-button {
-            background: #28a745;
-            color: white;
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .saved-recipes {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1rem;
-        }
-        .meal-card {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        .meal-image {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
-        .meal-info {
-            padding: 1rem;
-        }
-        .remove-favorite {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 0.5rem;
-            cursor: pointer;
-            float: right;
-        }
-        .alert {
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-radius: 5px;
-        }
-        .alert-danger {
-            background: #f8d7da;
-            color: #721c24;
-        }
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-        }
-    </style>
 </head>
+
 <body>
     <div class="account-container">
         <div class="account-header">
-            <a href="main_page.php" class="back-button">← Back to Recipes</a>
-            <button class="logout-button" onclick="window.location.href='?logout=1'">Logout</button>
+            <div>
+                <a href="main_page.php" class="back-button">← Back to Recipes</a>
+            </div>
+            <div>
+                <h1 class="account-title">My Account</h1>
+            </div>
+            <div>
+                <button class="logout-button" onclick="window.location.href='?logout=1'">Logout</button>
+            </div>
         </div>
         
-        <div class="account-sections">
-            <div class="user-details">
-                <h2>Account Settings</h2>
-                <?php if (isset($update_message)) echo $update_message; ?>
-                <form class="user-details-form" method="POST">
-                    <div>
-                        <label>Username</label>
-                        <input type="text" name="username" value="<?php echo htmlspecialchars($user['username']); ?>" required>
+        <div class="account-content">
+            <div class="account-section">
+                <h2 class="section-title">Account Settings</h2>
+                <?php if (!empty($update_message)) echo $update_message; ?>
+                
+                <form class="account-form" method="POST">
+                    <div class="input-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" value="<?php echo isset($user['username']) ? htmlspecialchars($user['username']) : ''; ?>" required>
                     </div>
-                    <div>
-                        <label>Current Password (for changes)</label>
-                        <input type="password" name="current_password">
+                    
+                    <div class="input-group">
+                        <label for="current_password">Current Password (for changes)</label>
+                        <input type="password" id="current_password" name="current_password">
                     </div>
-                    <div>
-                        <label>New Password (leave blank to keep)</label>
-                        <input type="password" name="new_password">
+                    
+                    <div class="input-group">
+                        <label for="new_password">New Password (leave blank to keep)</label>
+                        <input type="password" id="new_password" name="new_password">
                     </div>
+                    
                     <button type="submit" name="update_account" class="update-button">Save Changes</button>
                 </form>
             </div>
             
-            <div class="saved-recipes-section">
-                <h2>Your Saved Recipes</h2>
-                <div class="saved-recipes">
-                    <?php if (empty($favorites)): ?>
-                        <p>No saved recipes yet. Save recipes by clicking the star icon.</p>
-                    <?php else: ?>
-                        <?php foreach ($favorites as $meal): ?>
+            <div class="account-section">
+                <h2 class="section-title">Saved Recipes</h2>
+                
+                <?php if (empty($favorites)): ?>
+                    <p class="no-favorites">You haven't saved any recipes yet. Click the star icon on recipes to save them.</p>
+                <?php else: ?>
+                    <div class="saved-recipes">
+                        <?php foreach ($favorites as $meal): 
+                            $ingredients = [];
+                            for ($i = 1; $i <= 20; $i++) {
+                                $ingredient = $meal['strIngredient'.$i];
+                                $measure = $meal['strMeasure'.$i];
+                                if ($ingredient && trim($ingredient) !== '') {
+                                    $ingredients[] = trim($measure).' '.trim($ingredient);
+                                }
+                            }
+                        ?>
                             <div class="meal-card">
-                                <img src="<?php echo $meal['strMealThumb']; ?>" alt="<?php echo htmlspecialchars($meal['strMeal']); ?>" class="meal-image">
-                                <div class="meal-info">
-                                    <h3><?php echo htmlspecialchars($meal['strMeal']); ?></h3>
-                                    <p><?php echo $meal['strCategory']; ?></p>
-                                    <button class="remove-favorite" data-meal-id="<?php echo $meal['idMeal']; ?>">
-                                        Remove
+                                <div class="meal-header">
+                                    <img src="<?php echo $meal['strMealThumb']; ?>" alt="<?php echo htmlspecialchars($meal['strMeal']); ?>">
+                                    <div class="meal-details">
+                                        <h2><?php echo htmlspecialchars($meal['strMeal']); ?></h2>
+                                        <p><strong>Category:</strong> <?php echo $meal['strCategory']; ?></p>
+                                        <p><strong>Area:</strong> <?php echo $meal['strArea']; ?></p>
+                                        <p><strong>Ingredients:</strong> <?php echo implode(', ', array_slice($ingredients, 0, 5)); ?></p>
+                                    </div>
+                                    <button class="save-recipe-btn favorited" 
+                                            onclick="removeFavorite(this, '<?php echo $meal['idMeal']; ?>')">
+                                        ★
                                     </button>
                                 </div>
+                                <div class="instructions">
+                                    <p><strong>Instructions:</strong></p>
+                                    <ol><?php 
+                                        $instructions = preg_split('/(?<=[.?!])\s+/', $meal['strInstructions'], -1, PREG_SPLIT_NO_EMPTY);
+                                        foreach ($instructions as $step) {
+                                            echo '<li>'.htmlspecialchars(trim($step)).'</li>';
+                                        }
+                                    ?></ol>
+                                </div>
+                                <button class="toggle-instructions-btn" onclick="toggleInstructions(this)">Show Instructions</button>
                             </div>
                         <?php endforeach; ?>
-                    <?php endif; ?>
-                </div>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
 
     <script>
         // Handle favorite removal
-        document.querySelectorAll('.remove-favorite').forEach(button => {
-            button.addEventListener('click', function() {
-                if (!confirm('Remove this recipe from your favorites?')) return;
-                
-                const mealId = this.getAttribute('data-meal-id');
-                const card = this.closest('.meal-card');
-                
-                fetch('account.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: `action=remove_favorite&meal_id=${mealId}`
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        card.style.transition = 'opacity 0.3s';
-                        card.style.opacity = '0';
-                        setTimeout(() => card.remove(), 300);
-                    } else {
-                        alert('Failed to remove favorite');
+        function removeFavorite(button, mealId) {
+            if (!confirm('Remove this recipe from your favorites?')) return;
+            
+            const mealCard = button.closest('.meal-card');
+            
+            fetch('accountpage.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `action=remove_favorite&meal_id=${mealId}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    mealCard.style.transition = 'opacity 0.3s';
+                    mealCard.style.opacity = '0';
+                    setTimeout(() => mealCard.remove(), 300);
+                    
+                    // Show message if no favorites left
+                    if (document.querySelectorAll('.meal-card').length === 0) {
+                        document.querySelector('.saved-recipes').innerHTML = 
+                            '<p class="no-favorites">You haven\'t saved any recipes yet. Click the star icon on recipes to save them.</p>';
                     }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error removing favorite');
-                });
+                } else {
+                    alert('Failed to remove favorite');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error removing favorite');
             });
-        });
+        }
+
+        // Toggle instructions visibility
+        function toggleInstructions(button) {
+            const instructionsDiv = button.previousElementSibling;
+            if (instructionsDiv.style.display === 'block') {
+                instructionsDiv.style.display = 'none';
+                button.textContent = 'Show Instructions';
+            } else {
+                instructionsDiv.style.display = 'block';
+                button.textContent = 'Hide Instructions';
+            }
+        }
     </script>
 </body>
 </html>
