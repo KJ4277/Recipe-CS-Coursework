@@ -119,8 +119,8 @@ if (isset($_GET['logout'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Account - Recipe Finder</title>
     <link rel="stylesheet" href="recipestyle.css">
-</head>
 
+</head>
 <body>
     <div class="account-container">
         <div class="account-header">
@@ -201,6 +201,9 @@ if (isset($_GET['logout'])) {
                                     ?></ol>
                                 </div>
                                 <button class="toggle-instructions-btn" onclick="toggleInstructions(this)">Show Instructions</button>
+                                <button class="remove-favorite" onclick="removeFavorite(this, '<?php echo $meal['idMeal']; ?>')">
+                                    Remove Favorite
+                                </button>
                             </div>
                         <?php endforeach; ?>
                     </div>
