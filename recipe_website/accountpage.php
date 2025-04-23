@@ -201,9 +201,7 @@ if (isset($_GET['logout'])) {
                                     ?></ol>
                                 </div>
                                 <button class="toggle-instructions-btn" onclick="toggleInstructions(this)">Show Instructions</button>
-                                <button class="remove-favorite" onclick="removeFavorite(this, '<?php echo $meal['idMeal']; ?>')">
-                                    Remove Favorite
-                                </button>
+
                             </div>
                         <?php endforeach; ?>
                     </div>
