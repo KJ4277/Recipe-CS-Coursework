@@ -1,7 +1,4 @@
-/* ======================== */
-/* GLOBAL STYLES */
-/* ======================== */
-/* Base styles for the entire page */
+/* Combined CSS File */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -18,10 +15,7 @@ body {
     align-items: center;
 }
 
-/* ======================== */
-/* LOGIN PAGE STYLES */
-/* ======================== */
-/* Container for the login form */
+/* Login Page Styles */
 .login-container {
     background-color: white;
     border-radius: 15px;
@@ -33,7 +27,6 @@ body {
     text-align: center;
 }
 
-/* Login form headings */
 .login-container h1 {
     color: #333;
     margin-bottom: 30px;
@@ -41,7 +34,6 @@ body {
     font-weight: 600;
 }
 
-/* Input field groups (labels + inputs) */
 .input-group {
     margin-bottom: 20px;
     text-align: left;
@@ -72,7 +64,6 @@ body {
     background-color: white;
 }
 
-/* Login button styles */
 .login-button {
     width: 100%;
     padding: 12px;
@@ -92,7 +83,6 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* "Register" link below the form */
 .register-link {
     display: block;
     margin-top: 20px;
@@ -107,7 +97,6 @@ body {
     text-decoration: underline;
 }
 
-/* Error message styling */
 .text-danger {
     color: #dc3545;
     font-size: 0.9rem;
@@ -125,10 +114,11 @@ body {
     font-size: 0.95rem;
 }
 
-/* ======================== */
-/* RECIPE PAGE STYLES */
-/* ======================== */
-/* Save recipe button (heart icon) */
+/* Recipe Page Styles */
+.meal-header {
+    position: relative;
+}
+
 .save-recipe-btn {
     position: absolute;
     top: 10px;
@@ -152,7 +142,6 @@ body {
     outline: none;
 }
 
-/* Saved/favorited state */
 .save-recipe-btn.favorited {
     background-color: gold !important;
     color: white !important;
@@ -170,7 +159,6 @@ body {
     opacity: 0.9;
 }
 
-/* User account button (top-right avatar) */
 .account-button {
     width: 80px;
     height: 80px;
@@ -200,7 +188,6 @@ body {
     transform: scale(1.3);
 }
 
-/* Search bar container */
 .search-container {
     display: flex;
     justify-content: center;
@@ -233,7 +220,6 @@ body {
     background-color: #0056b3;
 }
 
-/* Filter options (checkboxes/radio buttons) */
 .filters-container {
     display: flex;
     flex-direction: column;
@@ -271,7 +257,12 @@ body {
     transform: scale(1.2);
 }
 
-/* Recipe cards container */
+.filter-option input[type="radio"]:checked + label {
+    background-color: #007bff;
+    color: white;
+    border-color: #0056b3;
+}
+
 .meals-container {
     width: 60%;
     display: flex;
@@ -280,7 +271,6 @@ body {
     gap: 20px;
 }
 
-/* Individual recipe card */
 .meal-card {
     background-color: white;
     width: 100%;
@@ -323,13 +313,15 @@ body {
     margin: 5px 0;
 }
 
-/* Recipe instructions (hidden by default) */
+ol {
+    padding-left: 20px;
+}
+
 .instructions {
     display: none;
     margin-top: 10px;
 }
 
-/* Toggle instructions button */
 .toggle-instructions-btn {
     margin-top: 10px;
     padding: 6px 10px;
@@ -354,7 +346,6 @@ body {
     transform: scale(1.05);
 }
 
-/* Suggested search terms */
 .suggestions-container {
     margin: 20px 0;
     text-align: center;
@@ -368,6 +359,13 @@ body {
 
 .suggestions-container:hover {
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.suggestions-container h3 {
+    margin: 0 0 15px 0;
+    font-size: 1.2rem;
+    color: #333;
+    font-weight: bold;
 }
 
 .suggestions-list {
@@ -395,7 +393,6 @@ body {
     transform: scale(1.05);
 }
 
-/* Combined filters + suggestions layout */
 .filters-suggestions-wrapper {
     display: flex;
     justify-content: center;
@@ -405,21 +402,17 @@ body {
     margin: 0 auto;
 }
 
-/* ======================== */
-/* ACCOUNT PAGE STYLES */
-/* ======================== */
-/* Main account container */
+/* Account Page Specific Styles */
 .account-container {
     width: 80%;
     max-width: 1200px;
     margin: 40px auto;
+    padding: 30px;
     background-color: white;
     border-radius: 15px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-    padding: 30px;
 }
 
-/* Account header (title + buttons) */
 .account-header {
     display: flex;
     justify-content: space-between;
@@ -430,71 +423,74 @@ body {
 }
 
 .account-title {
+    margin: 0;
     font-size: 2rem;
     color: #333;
-    margin: 0;
 }
 
-/* Back button (top-left) */
 .back-button {
     background-color: rgb(156, 171, 255);
     color: white;
-    padding: 10px 20px;
+    padding: 12px 20px;
     border-radius: 8px;
     text-decoration: none;
+    transition: all 0.3s;
     font-weight: bold;
     margin-right: 15px;
-    transition: all 0.3s;
 }
 
 .back-button:hover {
     background-color: rgb(120, 140, 255);
     transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Logout button */
 .logout-button {
     background-color: #dc3545;
     color: white;
     border: none;
-    padding: 10px 20px;
+    padding: 12px 20px;
     border-radius: 8px;
-    font-size: 1rem;
     cursor: pointer;
     transition: all 0.3s;
+    font-size: 1rem;
+    font-weight: bold;
 }
 
 .logout-button:hover {
     background-color: #c82333;
     transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Two-column layout for account content */
 .account-content {
     display: grid;
     grid-template-columns: 1fr 2fr;
     gap: 30px;
 }
 
-/* Section titles (e.g., "Account Details", "Saved Recipes") */
+.account-section {
+    margin-bottom: 30px;
+}
+
 .section-title {
-    font-size: 1.5rem;
-    color: #333;
     margin-bottom: 20px;
     padding-bottom: 10px;
     border-bottom: 1px solid #eee;
+    font-size: 1.5rem;
+    color: #333;
 }
 
-/* Form input groups (account settings) */
+.no-favorites {
+    font-style: italic;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Account Form Styles */
 .account-form .input-group {
     margin-bottom: 20px;
-}
-
-.account-form label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    color: #555;
+    text-align: left;
 }
 
 .account-form input {
@@ -505,6 +501,7 @@ body {
     font-size: 1rem;
     background-color: #f9f9f9;
     transition: all 0.3s;
+    box-sizing: border-box;
 }
 
 .account-form input:focus {
@@ -514,7 +511,6 @@ body {
     background-color: white;
 }
 
-/* Update profile button */
 .update-button {
     width: 100%;
     padding: 12px;
@@ -533,7 +529,7 @@ body {
     transform: translateY(-2px);
 }
 
-/* Saved recipes list */
+/* Saved Recipes Section */
 .saved-recipes {
     display: flex;
     flex-direction: column;
@@ -542,15 +538,23 @@ body {
     width: 100%;
 }
 
-/* Empty state for saved recipes */
-.no-favorites {
-    color: #666;
-    font-style: italic;
-    padding: 20px;
-    text-align: center;
+.remove-favorite {
+    margin-top: 10px;
+    padding: 8px 15px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s;
 }
 
-/* Alert messages (success/error) */
+.remove-favorite:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+}
+
+/* Alert messages */
 .alert {
     padding: 12px;
     border-radius: 8px;
@@ -569,7 +573,7 @@ body {
     border: 1px solid #c3e6cb;
 }
 
-/* Button groups (e.g., back + logout buttons) */
+/* Button groups */
 .button-group {
     display: flex;
     gap: 10px;
